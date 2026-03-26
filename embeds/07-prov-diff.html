@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Province Ballot Discrepancy</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<style>
+html,body{margin:0;padding:0;height:100%;width:100%;font-family:'Noto Sans Thai',sans-serif;background:#fff}
+#canvas{display:block;width:100%;height:100%}
+#i18n-btn{position:fixed;top:14px;right:18px;z-index:9999;background:#1a1a1a;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s}
+#i18n-btn:hover{background:#444}
+</style>
+</head>
+<body>
+<button id="i18n-btn" onclick="setLang(window._i18nLang==='th'?'en':'th')">🇬🇧 EN</button>
+<div style="height:100%;width:100%"><canvas id="canvas"></canvas></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<script>
+var PROV_DIFF=[{prov_name:'พัทลุง',sum_diff:15644},{prov_name:'ร้อยเอ็ด',sum_diff:-14584},{prov_name:'ศรีสะเกษ',sum_diff:11321},{prov_name:'สกลนคร',sum_diff:-8955},{prov_name:'น่าน',sum_diff:8915},{prov_name:'นครราชสีมา',sum_diff:-8446},{prov_name:'ชลบุรี',sum_diff:7894},{prov_name:'ยโสธร',sum_diff:7199},{prov_name:'ตรัง',sum_diff:-6149},{prov_name:'บุรีรัมย์',sum_diff:5684},{prov_name:'อุดรธานี',sum_diff:-5279},{prov_name:'ขอนแก่น',sum_diff:5205},{prov_name:'เพชรบูรณ์',sum_diff:5194},{prov_name:'สตูล',sum_diff:5116},{prov_name:'ชุมพร',sum_diff:4885},{prov_name:'หนองบัวลำภู',sum_diff:-4690},{prov_name:'สุพรรณบุรี',sum_diff:4508},{prov_name:'ปัตตานี',sum_diff:-4296},{prov_name:'ลพบุรี',sum_diff:4201},{prov_name:'อุบลราชธานี',sum_diff:-4082}];
+var ctx=document.getElementById('canvas');
+new Chart(ctx,{type:'bar',data:{labels:PROV_DIFF.map(function(d){return d.prov_name;}),datasets:[{label:'ส่วนต่างรวม (ใบ)',data:PROV_DIFF.map(function(d){return d.sum_diff;}),backgroundColor:PROV_DIFF.map(function(d){return d.sum_diff>=0?'rgba(24,95,165,0.75)':'rgba(192,57,43,0.75)';}),borderRadius:3,borderWidth:0}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(i){return' '+Number(i.raw).toLocaleString()+' ใบ';}}}},scales:{x:{ticks:{callback:function(v){return v.toLocaleString();},font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},y:{ticks:{font:{size:10}},grid:{display:false}}}}});
+var _lang='th';var _map={'ส่วนต่างรวม (ใบ)':'Total discrepancy (ballots)'};
+function setLang(lang){_lang=lang;window._i18nLang=lang;Object.values(Chart.instances).forEach(function(ch){if(!ch||!ch.data)return;(ch.data.datasets||[]).forEach(function(ds){if(!ds._origLabel)ds._origLabel=ds.label||'';ds.label=(lang==='en'&&_map[ds._origLabel])?_map[ds._origLabel]:ds._origLabel;});try{ch.update('none');}catch(e){}});var btn=document.getElementById('i18n-btn');if(btn)btn.textContent=lang==='en'?'🇹🇭 TH':'🇬🇧 EN';}
+window.setLang=setLang;window._i18nLang='th';
+</script>
+</body>
+</html>

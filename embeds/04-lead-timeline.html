@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<style>
+html,body{margin:0;padding:0;height:100%;width:100%;font-family:'Noto Sans Thai',sans-serif;background:#fff}
+#canvas{display:block;width:100%;height:100%}
+#i18n-btn{position:fixed;top:14px;right:18px;z-index:9999;background:#1a1a1a;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:700;font-family:'Noto Sans Thai',Arial,sans-serif;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s}
+#i18n-btn:hover{background:#444}
+</style>
+</head>
+<body>
+<button id="i18n-btn" onclick="setLang(window._i18nLang==='th'?'en':'th')">🇬🇧 EN</button>
+<div style="height:100%;width:100%">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script>
+function makeGapPlugin(i0,i1,i2,i3){
+  return {
+    id:'gp',
+    beforeDraw:function(chart){
+      var ctx=chart.ctx,x=chart.scales.x,t=chart.chartArea.top,b=chart.chartArea.bottom;
+      function sh(a,c,col){
+        var x0=x.getPixelForValue(a),x1=x.getPixelForValue(c);
+        ctx.save();ctx.fillStyle=col+'22';ctx.fillRect(x0,t,x1-x0,b-t);
+        ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+        ctx.beginPath();ctx.moveTo(x0,t);ctx.lineTo(x0,b);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(x1,t);ctx.lineTo(x1,b);ctx.stroke();
+        ctx.setLineDash([]);ctx.restore();
+      }
+      sh(i0,i1,'#E67E22');sh(i2,i3,'#C0392B');
+    }
+  };
+}
+
+var leadSnaps = [
+  {t:'16:48',bjt:0,ppp:0},{t:'17:38',bjt:2,ppp:0},{t:'17:48',bjt:9,ppp:0},
+  {t:'17:58',bjt:16,ppp:1},{t:'18:08',bjt:31,ppp:4},{t:'18:18',bjt:52,ppp:7},
+  {t:'18:28',bjt:77,ppp:10},{t:'18:38',bjt:97,ppp:18},{t:'18:48',bjt:131,ppp:24},
+  {t:'18:58',bjt:153,ppp:26},{t:'19:08',bjt:164,ppp:34},{t:'19:18',bjt:165,ppp:40},
+  {t:'19:28',bjt:168,ppp:43},{t:'19:38',bjt:169,ppp:49},{t:'19:43',bjt:171,ppp:50},
+  {t:'20:38',bjt:179,ppp:71},{t:'20:49',bjt:178,ppp:70},{t:'22:35',bjt:177,ppp:79},
+  {t:'22:49',bjt:177,ppp:80},{t:'23:01',bjt:178,ppp:80},{t:'23:13',bjt:178,ppp:82},
+  {t:'23:43',bjt:176,ppp:84},{t:'00:17+',bjt:175,ppp:85},{t:'15:51+',bjt:175,ppp:85}
+];
+
+var ls=leadSnaps, ll=ls.map(function(s){return s.t;});
+var G1=14, G2=15, G3=16, G4=17;
+var gapPl=makeGapPlugin(G1,G2,G3,G4);
+
+var ctx = document.getElementById('canvas');
+new Chart(ctx, {
+  type:'line',plugins:[gapPl],
+  data:{labels:ll,datasets:[
+    {label:'ภูมิใจไทย (175 เขต)',data:ls.map(function(s){return s.bjt;}),borderColor:'#185FA5',
+     backgroundColor:'rgba(24,95,165,0.07)',borderWidth:2.5,
+     pointRadius:ls.map(function(s,i){return i===G2?8:2.5;}),
+     pointBackgroundColor:ls.map(function(s,i){return i===G2?'#E67E22':'#185FA5';}),
+     fill:true,tension:0.3,spanGaps:false},
+    {label:'ประชาชน (85 เขต)',data:ls.map(function(s){return s.ppp;}),borderColor:'#E07B00',
+     backgroundColor:'rgba(224,123,0,0.05)',borderWidth:2.5,
+     pointRadius:ls.map(function(s,i){return i===G2?8:2.5;}),
+     pointBackgroundColor:ls.map(function(s,i){return i===G2?'#E67E22':'#E07B00';}),
+     fill:true,tension:0.3,spanGaps:false},
+    {label:'BJT = 175 (final)',data:Array(ls.length).fill(175),borderColor:'#185FA5',borderDash:[5,5],borderWidth:1,
+     fill:false,pointRadius:0,spanGaps:false},
+    {label:'PPP = 85 (final)',data:Array(ls.length).fill(85),borderColor:'#E07B00',borderDash:[5,5],borderWidth:1,
+     fill:false,pointRadius:0,spanGaps:false}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,position:'top',labels:{font:{size:11},padding:12,boxWidth:12,usePointStyle:true}},
+      tooltip:{backgroundColor:'rgba(0,0,0,0.85)',padding:10,
+        callbacks:{label:function(ctx){return ' '+ctx.dataset.label+': '+ctx.raw+' เขต';}}}},
+    scales:{
+      y:{title:{display:true,text:'จำนวนเขต',font:{size:10}},min:0,max:180,ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,0.06)'}},
+      x:{ticks:{font:{size:10}},grid:{display:false}}
+    }
+  }
+});
+
+var _lang = 'th';
+var _map = {
+  'ภูมิใจไทย (175 เขต)':'Bhumjaithai (175 const.)','ประชาชน (85 เขต)':"People's Party (85 const.)",
+  'BJT = 175 (final)':'BJT = 175 (final)','PPP = 85 (final)':'PPP = 85 (final)',
+  'จำนวนเขต':'No. of constituencies'
+};
+
+function setLang(lang){
+  _lang = lang;
+  window._i18nLang = lang;
+  Object.values(Chart.instances).forEach(function(ch){
+    if(!ch||!ch.data) return;
+    (ch.data.datasets||[]).forEach(function(ds){
+      if(!ds._origLabel) ds._origLabel = ds.label||'';
+      ds.label = (lang==='en'&&_map[ds._origLabel]) ? _map[ds._origLabel] : ds._origLabel;
+    });
+    if(ch.options&&ch.options.scales){
+      Object.values(ch.options.scales).forEach(function(sc){
+        if(!sc.title) return;
+        if(!sc.title._orig) sc.title._orig = sc.title.text||'';
+        var orig = sc.title._orig;
+        sc.title.text = (lang==='en'&&orig&&_map[orig]) ? _map[orig] : orig;
+      });
+    }
+    try{ch.update('none');}catch(e){}
+  });
+  var btn = document.getElementById('i18n-btn');
+  if(btn) btn.textContent = lang==='en'?'🇹🇭 TH':'🇬🇧 EN';
+}
+window.setLang = setLang;
+window._i18nLang = 'th';
+</script>
+</body>
+</html>

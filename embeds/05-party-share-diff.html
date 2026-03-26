@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Party Share Difference</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<style>
+html,body{margin:0;padding:0;height:100%;width:100%;font-family:'Noto Sans Thai',sans-serif;background:#fff}
+#canvas{display:block;width:100%;height:100%}
+#i18n-btn{position:fixed;top:14px;right:18px;z-index:9999;background:#1a1a1a;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:700;font-family:'Noto Sans Thai',Arial,sans-serif;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s}
+#i18n-btn:hover{background:#444}
+</style>
+</head>
+<body>
+<button id="i18n-btn" onclick="setLang(window._i18nLang==='th'?'en':'th')">🇬🇧 EN</button>
+<div style="height:100%;width:100%">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script>
+function makeGapPlugin(i0,i1,i2,i3){
+  return {id:'gp',beforeDraw:function(chart){
+    var ctx=chart.ctx,x=chart.scales.x,t=chart.chartArea.top,b=chart.chartArea.bottom;
+    function sh(a,c,col){
+      var x0=x.getPixelForValue(a),x1=x.getPixelForValue(c);
+      ctx.save();ctx.fillStyle=col+'22';ctx.fillRect(x0,t,x1-x0,b-t);
+      ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(x0,t);ctx.lineTo(x0,b);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x1,t);ctx.lineTo(x1,b);ctx.stroke();
+      ctx.setLineDash([]);ctx.restore();
+    }
+    sh(i0,i1,'#E67E22');sh(i2,i3,'#C0392B');
+  }};
+}
+
+var snaps=[{t:'16:48',v:559,p:0},{t:'16:58',v:559,p:0},{t:'17:08',v:559,p:0},{t:'17:18',v:559,p:0},{t:'17:28',v:559,p:0},{t:'17:38',v:771,p:0},{t:'17:48',v:2477,p:0},{t:'17:58',v:7202,p:107},{t:'18:08',v:23940,p:2704},{t:'18:18',v:60706,p:9473},{t:'18:28',v:127518,p:28246},{t:'18:38',v:234684,p:73197},{t:'18:48',v:386813,p:158338},{t:'18:58',v:583528,p:300442},{t:'19:08',v:846558,p:501969},{t:'19:18',v:1190289,p:788083},{t:'19:28',v:1607272,p:1139184},{t:'19:38',v:2094628,p:1578130},{t:'19:43',v:2367193,p:1813220},{t:'20:38',v:8016176,p:7123672},{t:'20:49',v:9789994,p:8883169},{t:'22:35',v:26843450,p:26447119},{t:'22:39',v:27213312,p:26842766},{t:'22:45',v:27764570,p:27435760},{t:'22:49',v:28819656,p:28479758},{t:'22:51',v:28995316,p:28661715},{t:'23:01',v:29805280,p:29508425},{t:'23:07',v:30228274,p:29992977},{t:'23:13',v:30632155,p:30383128},{t:'23:15',v:30753657,p:30519627},{t:'23:17',v:30866552,p:30636997},{t:'23:21',v:31084634,p:30868411},{t:'23:23',v:31189558,p:30994438},{t:'23:27',v:31371202,p:31178573},{t:'23:31',v:31566500,p:31369277},{t:'23:43',v:32001816,p:31867545},{t:'23:59',v:32465124,p:32344636},{t:'00:17+',v:32876585,p:32761489},{t:'00:33+',v:33189841,p:33087482},{t:'00:41+',v:33331360,p:33244650},{t:'01:01+',v:33626831,p:33540766},{t:'01:15+',v:33838568,p:33768802},{t:'01:59+',v:34162999,p:34120655},{t:'02:59+',v:34318732,p:34281188},{t:'03:59+',v:34389998,p:34349300},{t:'08:53+',v:34434497,p:34394820},{t:'15:51+',v:34527431,p:34489548}];
+
+(function(){
+  var FINAL=34527431;
+  var D1=2,D2=4;
+  var origLabels=snaps.map(function(s){return s.t;});
+  var labels=origLabels.slice(0,19).concat(['','']).concat(origLabels.slice(19,21)).concat(['','','','']).concat(origLabels.slice(21));
+  var I_PRE_G1=18,I_POST_G1=21,I_PRE_G2=22,I_POST_G2=27;
+  function origIdx(li){if(li<=18)return li;if(li<=20)return null;if(li===21)return 19;if(li===22)return 20;if(li<=26)return null;return li-(D1+D2);}
+  var N_EXT=labels.length;
+
+  var dbjt=[],dppp=[];
+  for(var i=0;i<N_EXT;i++){
+    var oi=origIdx(i);
+    if(oi===null){dbjt.push(null);dppp.push(null);}else{
+      var snap=snaps[oi];
+      var bjtpct=(snap.v/FINAL)*100;
+      var ppppct=(snap.p/FINAL)*100;
+      dbjt.push(parseFloat((bjtpct-31.3).toFixed(2)));
+      dppp.push(parseFloat((ppppct-24.6).toFixed(2)));
+    }
+  }
+
+  var gapPlg=makeGapPlugin(I_PRE_G1,I_POST_G1,I_PRE_G2,I_POST_G2);
+  var ctx=document.getElementById('canvas');
+  new Chart(ctx,{
+    type:'line',plugins:[gapPlg],
+    data:{labels:labels,datasets:[
+      {label:'ภูมิใจไทย (final 31.3%)',data:dbjt,borderColor:'#1F4E79',backgroundColor:'rgba(31,78,121,0.07)',borderWidth:2.5,pointRadius:1.5,fill:true,tension:0.3},
+      {label:'ประชาชน (final 24.6%)',data:dppp,borderColor:'#E07B00',backgroundColor:'rgba(224,123,0,0.05)',borderWidth:2.5,pointRadius:1.5,fill:true,tension:0.3},
+      {label:'',data:labels.map(function(){return 0;}),borderColor:'#888',borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{title:function(it){return(it&&it.length&&labels[it[0].dataIndex])||'';},label:function(i){if(!i.dataset.label)return null;return' '+i.dataset.label+': '+(i.raw>=0?'+':'')+i.raw+'%';}}}},
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:50,autoSkip:true,maxTicksLimit:18},grid:{color:'rgba(0,0,0,0.03)'}},
+        y:{ticks:{callback:function(v){return(v>=0?'+':'')+v+'%';},font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'},min:-15,max:15,title:{display:true,text:'ผลต่างจาก final share',font:{size:9}}}
+      }
+    }
+  });
+})();
+
+var _lang='th';
+var _map={'ภูมิใจไทย (final 31.3%)':'Bhumjaithai (final 31.3%)','ประชาชน (final 24.6%)':"People's Party (final 24.6%)",'ผลต่างจาก final share':'Deviation from final share'};
+function setLang(lang){_lang=lang;window._i18nLang=lang;Object.values(Chart.instances).forEach(function(ch){if(!ch||!ch.data)return;(ch.data.datasets||[]).forEach(function(ds){if(!ds._origLabel)ds._origLabel=ds.label||'';ds.label=(lang==='en'&&_map[ds._origLabel])?_map[ds._origLabel]:ds._origLabel;});if(ch.options&&ch.options.scales){Object.values(ch.options.scales).forEach(function(sc){if(!sc.title)return;if(!sc.title._orig)sc.title._orig=sc.title.text||'';var orig=sc.title._orig;sc.title.text=(lang==='en'&&orig&&_map[orig])?_map[orig]:orig;});}try{ch.update('none');}catch(e){}});var btn=document.getElementById('i18n-btn');if(btn)btn.textContent=lang==='en'?'🇹🇭 TH':'🇬🇧 EN';}
+window.setLang=setLang;window._i18nLang='th';
+</script>
+</body>
+</html>
