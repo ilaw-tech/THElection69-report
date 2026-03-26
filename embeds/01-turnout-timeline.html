@@ -105,7 +105,7 @@ var linV = [];
 var linP = [];
 for(var i=0;i<N_EXT;i++){
   var oi = origIdx(i);
-  if(oi===null || i===I_POST_G1){
+  if(oi===null){
     linV.push(null); linP.push(null);
   } else {
     linV.push(M(snaps[oi].v));
@@ -190,14 +190,16 @@ new Chart(ctx, {
       {label:'ส.ส.เขต',data:linV,borderColor:'#2E8B57',backgroundColor:'rgba(46,139,87,0.08)',tension:.35,pointRadius:prMain,pointBackgroundColor:'#2E8B57',pointBorderWidth:0,spanGaps:false,borderWidth:2},
       {label:'ส.ส.บัญชีรายชื่อ',data:linP,borderColor:'#E91E8C',backgroundColor:'rgba(233,30,140,0.08)',tension:.35,pointRadius:prMain,pointBackgroundColor:'#E91E8C',pointBorderWidth:0,spanGaps:false,borderWidth:2},
       {label:'ส.ส.เขต (ระหว่าง gap)',data:stepG1V,borderColor:'#2E8B57',borderDash:[8,4],tension:0,pointRadius:0,spanGaps:false,borderWidth:1.5,fill:false},
-      {label:'ส.ส.บัญชีรายชื่อ (ระหว่าง gap)',data:stepG1P,borderColor:'#E91E8C',borderDash:[8,4],tension:0,pointRadius:0,spanGaps:false,borderWidth:1.5,fill:false}
+      {label:'ส.ส.บัญชีรายชื่อ (ระหว่าง gap)',data:stepG1P,borderColor:'#E91E8C',borderDash:[8,4],tension:0,pointRadius:0,spanGaps:false,borderWidth:1.5,fill:false},
+      {label:'ส.ส.เขต (gap 2)',data:stepG2V,borderColor:'#2E8B57',borderDash:[8,4],tension:0,pointRadius:0,spanGaps:false,borderWidth:1.5,fill:false},
+      {label:'ส.ส.บัญชีรายชื่อ (gap 2)',data:stepG2P,borderColor:'#E91E8C',borderDash:[8,4],tension:0,pointRadius:0,spanGaps:false,borderWidth:1.5,fill:false}
     ]
   },
   options:{
     responsive:true,
     maintainAspectRatio:false,
     plugins:{
-      legend:{display:true,position:'top',labels:{font:{size:11},padding:12,boxWidth:12,usePointStyle:true}},
+      legend:{display:true,position:'top',labels:{font:{size:11},padding:12,boxWidth:12,usePointStyle:true,filter:function(item){return item.datasetIndex<2;}}},
       tooltip:{
         backgroundColor:'rgba(0,0,0,0.85)',
         padding:10,
@@ -223,7 +225,7 @@ new Chart(ctx, {
               var cur=snaps[oi];
               var delta = cur.v - prev.v;
               if(delta<0 || ctx.dataIndex===I_PRE_G1 || ctx.dataIndex===I_PRE_G2) return ' ⚠ GAP warning';
-            }
+               }
             return '';
           }
         }
@@ -244,6 +246,7 @@ var _map = {
   'ประชาชน':"People's Party",'ภูมิใจไทย':'Bhumjaithai','กล้าธรรม':'Kla Tham','เพื่อไทย':'Pheu Thai','ประชาธิปัตย์':'Democrat',
   'ส.ส.เขต':'Const. MPs','ส.ส.บัญชีรายชื่อ':'Party-list MPs',
   'ส.ส.เขต (ระหว่าง gap)':'Const. MPs (in gap)','ส.ส.บัญชีรายชื่อ (ระหว่าง gap)':'Party-list MPs (in gap)',
+  'ส.ส.เขต (gap 2)':'Const. MPs (gap 2)','ส.ส.บัญชีรายชื่อ (gap 2)':'Party-list MPs (gap 2)',
   'จำนวนผู้ใช้สิทธิ์ (ล้านคน)':'Voters (millions)'
 };
 
