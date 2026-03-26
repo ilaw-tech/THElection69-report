@@ -3,27 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vote Decreases Timeline</title>
+<title>Votes Decrease Timeline</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <style>
 html,body{margin:0;padding:0;height:100%;width:100%;font-family:'Noto Sans Thai',sans-serif;background:#fff}
 #canvas{display:block;width:100%;height:100%}
-#i18n-btn{position:fixed;top:14px;right:18px;z-index:9999;background:#1a1a1a;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s}
+#i18n-btn{position:fixed;top:14px;right:18px;z-index:9999;background:#1a1a1a;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:700;font-family:'Noto Sans Thai',Arial,sans-serif;cursor:pointer;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s}
 #i18n-btn:hover{background:#444}
 </style>
 </head>
 <body>
 <button id="i18n-btn" onclick="setLang(window._i18nLang==='th'?'en':'th')">🇬🇧 EN</button>
 <div style="height:100%;width:100%"><canvas id="canvas"></canvas></div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <script>
-var decreaseData=[{t:'22:35',d:3316},{t:'22:39',d:7750},{t:'22:45',d:1547},{t:'22:49',d:974},{t:'22:51',d:1715},{t:'23:01',d:809972},{t:'23:07',d:763097},{t:'23:13',d:404081},{t:'23:15',d:120498},{t:'23:17',d:112905},{t:'23:21',d:218176},{t:'23:23',d:104924},{t:'23:27',d:181644},{t:'23:31',d:195202},{t:'23:43',d:435286},{t:'23:59',d:463492},{t:'00:17+',d:374741},{t:'00:33+',d:646456},{t:'00:41+',d:141519},{t:'01:01+',d:295263},{t:'01:15+',d:211737},{t:'01:59+',d:323431},{t:'02:59+',d:155733},{t:'03:59+',d:71266},{t:'08:53+',d:44501},{t:'15:51+',d:37883}];
-var ctx=document.getElementById('canvas');
-new Chart(ctx,{type:'bar',data:{labels:decreaseData.map(function(d){return d.t;}),datasets:[{label:'คะแนนลดลง',data:decreaseData.map(function(d){return d.d;}),backgroundColor:'rgba(192,57,43,0.75)',borderRadius:2,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(i){return' '+i.raw.toLocaleString()+' คะแนน';}}}},scales:{x:{ticks:{font:{size:8},maxRotation:45,autoSkip:true},grid:{display:false}},y:{title:{display:true,text:'คะแนน',font:{size:9}},ticks:{callback:function(v){return(v/1000).toFixed(0)+'K';},font:{size:8}},grid:{color:'rgba(0,0,0,0.04)'}}}}});
-var _lang='th';var _map={'คะแนนลดลง':'Votes decreased'};
-function setLang(lang){_lang=lang;window._i18nLang=lang;Object.values(Chart.instances).forEach(function(ch){if(!ch||!ch.data)return;(ch.data.datasets||[]).forEach(function(ds){if(!ds._origLabel)ds._origLabel=ds.label||'';ds.label=(lang==='en'&&_map[ds._origLabel])?_map[ds._origLabel]:ds._origLabel;});try{ch.update('none');}catch(e){}});var btn=document.getElementById('i18n-btn');if(btn)btn.textContent=lang==='en'?'🇹🇭 TH':'🇬🇧 EN';}
-window.setLang=setLang;window._i18nLang='th';
+var _i18nMap={
+  'คะแนนลดลง':'Votes decreased',
+  'คะแนนที่ลดลง':'Vote decrease'
+};
+window._i18nLang='th';
+function setLang(lang){window._i18nLang=lang;location.reload();}
+function i18n(th){return window._i18nLang==='en'&&_i18nMap[th]?_i18nMap[th]:th;}
+
+var decEvents=[{t:'22:35→22:39',dec:-2300,n:79},{t:'22:39→22:45',dec:-2590,n:83},{t:'22:45→22:49',dec:-8678,n:67},{t:'22:49→22:51',dec:-2123,n:77},{t:'22:51→23:01',dec:-12503,n:158},{t:'23:01→23:07',dec:-11173,n:183},{t:'23:07→23:13',dec:-4260,n:136},{t:'23:13→23:15',dec:-1617,n:64},{t:'23:15→23:17',dec:-1597,n:45},{t:'23:17→23:21',dec:-5543,n:95},{t:'23:21→23:23',dec:-1258,n:51},{t:'23:23→23:27',dec:-3704,n:124},{t:'23:27→23:31',dec:-1655,n:59},{t:'23:31→23:43',dec:-22644,n:208},{t:'23:43→23:59',dec:-12164,n:218},{t:'23:59→00:17',dec:-12014,n:168},{t:'00:17→00:33',dec:-2615,n:82},{t:'00:33→00:41',dec:-2347,n:54},{t:'00:41→01:01',dec:-2350,n:82},{t:'01:01→01:15',dec:-2118,n:41},{t:'01:15→01:59',dec:-2124,n:55},{t:'01:59→02:59',dec:-893,n:14},{t:'02:59→03:59',dec:-256,n:10},{t:'03:59→08:53',dec:-109,n:4}];
+new Chart(document.getElementById('canvas'),{type:'bar',data:{labels:decEvents.map(function(d){return d.t;}),datasets:[{label:i18n('คะแนนลดลง'),data:decEvents.map(function(d){return d.dec;}),backgroundColor:'rgba(255,77,77,0.7)',borderRadius:2,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(i){return ' ลดลง: '+Number(i.raw).toLocaleString()+' คะแนน';}}}},scales:{x:{ticks:{font:{size:8},maxRotation:60,autoSkip:false},grid:{display:false}},y:{ticks:{callback:function(v){return v.toLocaleString();},font:{size:9}},title:{display:true,text:i18n('คะแนนที่ลดลง'),font:{size:10}}}}}});
 </script>
 </body>
 </html>
