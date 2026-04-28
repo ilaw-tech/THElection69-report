@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scatter สูตรกลาง รายภูมิภาค — Embed Library | iLaw 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans Thai',-apple-system,Arial,sans-serif;background:#f5f6fa;color:#222;padding:24px 16px}
+.container{max-width:1200px;margin:0 auto}
+h1{text-align:center;margin-bottom:6px;color:#1a237e;font-size:22px;font-weight:700}
+.subtitle{text-align:center;color:#666;margin-bottom:6px;font-size:14px}
+.meta{text-align:center;color:#888;margin-bottom:24px;font-size:12px}
+.formula-box{background:#fff;border-left:4px solid #3949ab;padding:14px 18px;margin:0 auto 28px;max-width:900px;
+  border-radius:6px;font-size:13px;line-height:1.7;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.formula-box code{background:#f3f4ff;color:#1a237e;padding:1px 6px;border-radius:3px;font-family:Consolas,monospace}
+.region-block{margin-bottom:32px}
+.region-header{font-size:16px;font-weight:700;color:#1a237e;margin-bottom:10px;padding-left:6px;
+  border-left:4px solid #3949ab}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:16px}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.08);
+  border:1px solid #e8eaf6;transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.card-head{background:#1a237e;color:#fff;padding:10px 14px;font-weight:600;font-size:13px;
+  display:flex;justify-content:space-between;align-items:center}
+.card-head .meta-tag{font-size:11px;color:#c5cae9;font-weight:400}
+iframe{width:100%;height:560px;border:none;display:block;background:#fff}
+.embed-row{padding:10px 14px;background:#f9f9fb;border-top:1px solid #eee;display:flex;gap:8px;align-items:center}
+.embed-row code{flex:1;background:#fff;padding:6px 10px;border-radius:4px;border:1px solid #ddd;
+  font-size:11px;font-family:Consolas,monospace;color:#1a237e;overflow-x:auto;white-space:nowrap}
+.btn-copy{background:#3949ab;color:#fff;border:0;padding:6px 12px;border-radius:4px;font-size:11px;
+  font-family:'Noto Sans Thai',sans-serif;cursor:pointer;font-weight:600}
+.btn-copy:hover{background:#1a237e}
+.btn-copy.ok{background:#43a047}
+.footer{margin-top:40px;padding:20px;color:#666;font-size:12px;text-align:center;line-height:1.7;
+  border-top:1px solid #ddd}
+@media(max-width:768px){
+  body{padding:14px 8px}
+  .grid{grid-template-columns:1fr}
+  iframe{height:600px}
+  h1{font-size:18px}
+  .embed-row{flex-direction:column;align-items:stretch}
+  .embed-row code{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📊 Scatter: y = αx + b + ε รายภูมิภาค</h1>
+<p class="subtitle">12 กราฟแยก – พร้อม embed ลง WordPress</p>
+<p class="meta">x = คะแนนจริง 100% &nbsp;|&nbsp; y = คะแนน snapshot 94% (ECT 8 ก.พ. 2569)</p>
+
+<div class="formula-box">
+<b>🔵 เส้นดำทึบ = สูตรกลาง (α)</b><br>
+&nbsp;&nbsp;บัญชีรายชื่อ: <code>y = 0.9253x</code> &nbsp; R² = 0.9968 (ทุกพรรคยกเว้นประชาชน)<br>
+&nbsp;&nbsp;แบ่งเขต: <code>y = 0.9271x</code> &nbsp; R² = 0.9953 (ทุกพรรคยกเว้นประชาชน)<br>
+<b>⚡ ε</b> = ระยะห่างจากเส้นสูตรกลาง = ปัจจัยรายเขตที่ยังอธิบายไม่ได้<br>
+<b>👉 ปชช ไม่มีสูตรของตัวเอง</b> เพราะความปรวนแปรสูงกว่าพรรคอื่นอย่างมีนัย
+</div>
+
+<!-- REGION CARDS WILL BE INJECTED HERE -->
+<div id="regions"></div>
+
+<div class="footer">
+<p>แต่ละไฟล์เป็น HTML แบบ self-contained ใช้ Plotly จาก CDN — embed ผ่าน <code>&lt;iframe&gt;</code> บน WordPress ได้เลย</p>
+<p style="margin-top:8px">ที่มา: <code>scatter_formula_regions.html</code> (สร้าง 25 เม.ย. 2026)</p>
+</div>
+</div>
+
+<script>
+// Region data with iframe embeds — built from _manifest.json
+const regions = [
+  {emoji:"🇹🇭", title:"ภาพรวมทั้งประเทศ (77 จังหวัด · 400 เขต)",
+   charts:[
+     {file:"national-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"400 เขต | 22,800 จุดข้อมูล"},
+     {file:"national-constituency.html", ballot:"แบ่งเขต",     meta:"400 เขต | 3,463 จุดข้อมูล"},
+   ]},
+  {emoji:"🏔️", title:"ภาคเหนือ (17 จังหวัด)",
+   charts:[
+     {file:"north-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"70 เขต | 3,990 จุดข้อมูล"},
+     {file:"north-constituency.html", ballot:"แบ่งเขต",     meta:"69 เขต | 541 จุดข้อมูล"},
+   ]},
+  {emoji:"🌾", title:"ภาคอีสาน (20 จังหวัด)",
+   charts:[
+     {file:"isan-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"133 เขต | 7,580 จุดข้อมูล"},
+     {file:"isan-constituency.html", ballot:"แบ่งเขต",     meta:"133 เขต | 1,165 จุดข้อมูล"},
+   ]},
+  {emoji:"🏙️", title:"ภาคกลาง (22 จังหวัด)",
+   charts:[
+     {file:"central-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"81 เขต | 4,617 จุดข้อมูล"},
+     {file:"central-constituency.html", ballot:"แบ่งเขต",     meta:"81 เขต | 602 จุดข้อมูล"},
+   ]},
+  {emoji:"🏢", title:"กรุงเทพและปริมณฑล (4 จังหวัด)",
+   charts:[
+     {file:"bkk-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"57 เขต | 3,249 จุดข้อมูล"},
+     {file:"bkk-constituency.html", ballot:"แบ่งเขต",     meta:"57 เขต | 729 จุดข้อมูล"},
+   ]},
+  {emoji:"🌊", title:"ภาคใต้ (14 จังหวัด)",
+   charts:[
+     {file:"south-partylist.html",   ballot:"บัญชีรายชื่อ", meta:"59 เขต | 3,363 จุดข้อมูล"},
+     {file:"south-constituency.html", ballot:"แบ่งเขต",     meta:"59 เขต | 419 จุดข้อมูล"},
+   ]},
+];
+
+// GitHub Pages URL — ilaw-tech/THElection69-report (ไฟล์อยู่ใน embeds/scatter-formula/)
+const BASE_URL = "https://ilaw-tech.github.io/THElection69-report/embeds/scatter-formula";
+
+const regionsRoot = document.getElementById("regions");
+regions.forEach(reg => {
+  const block = document.createElement("div");
+  block.className = "region-block";
+  block.innerHTML = `<div class="region-header">${reg.emoji} ${reg.title}</div>`;
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  reg.charts.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const embedCode = `<iframe src="${BASE_URL}/${c.file}" width="100%" height="640" frameborder="0" style="border:none"></iframe>`;
+    card.innerHTML = `
+      <div class="card-head">
+        <span>${c.ballot}</span>
+        <span class="meta-tag">${c.meta}</span>
+      </div>
+      <iframe src="${c.file}" loading="lazy"></iframe>
+      <div class="embed-row">
+        <code>${embedCode.replace(/</g,"&lt;")}</code>
+        <button class="btn-copy" data-code='${embedCode.replace(/'/g,"&#39;")}'>คัดลอก</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  block.appendChild(grid);
+  regionsRoot.appendChild(block);
+});
+
+// Copy-to-clipboard
+document.addEventListener("click", e => {
+  if (e.target.matches(".btn-copy")) {
+    const code = e.target.getAttribute("data-code");
+    navigator.clipboard.writeText(code).then(() => {
+      e.target.textContent = "✓ คัดลอกแล้ว";
+      e.target.classList.add("ok");
+      setTimeout(() => {
+        e.target.textContent = "คัดลอก";
+        e.target.classList.remove("ok");
+      }, 1800);
+    });
+  }
+});
+</script>
+</body>
+</html>
